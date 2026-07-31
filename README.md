@@ -116,7 +116,7 @@ docker compose down -v
    variables** que hay que actualizar (son las que cambian entre local y AWS):
    ```env
    CORS_ORIGIN=http://34.230.89.199
-   API_URL=http://34.230.89.199:3000/api
+   API_URL=http://34.230.89.199:3000/api-docs
    ```
    También es recomendable cambiar `JWT_SECRET`, `DB_PASSWORD` y `SEED_ADMIN_PASSWORD` por
    valores propios antes de exponer la instancia a internet (los valores del `.env.example`
@@ -125,7 +125,16 @@ docker compose down -v
    ```bash
    docker compose up -d --build
    ```
-6. Abre `http://34.230.89.199` en el navegador. La documentación de la API queda en
-   `http://34.230.89.199:3000/api-docs`, para validar que todo este ok `http://34.230.89.199:3000/health`,
-  para ingresar al frontend,
-  hacer pruebas `http://34.230.89.199/login`.
+6. Abre `http://34.230.89.199` en el navegador. 
+   La documentación de la API queda en
+   ```bash
+   `http://34.230.89.199:3000/api-docs`
+   ``` 
+   Para validar que todo este ok 
+   ```bash
+   `http://34.230.89.199:3000/health`
+   ```
+   Para ingresar al frontend
+   ```bash
+   `http://34.230.89.199/login`
+   ```
