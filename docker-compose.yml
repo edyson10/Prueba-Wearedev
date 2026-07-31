@@ -1,0 +1,68 @@
+# Orquesta los 3 servicios de la aplicación: base de datos, backend y frontend.
+# Pensado para "clonar el repo y levantar todo" tanto en local como en una instancia EC2:
+# lo único que cambia entre un entorno y otro son los valores del archivo .env (ver .env.example).
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: task-manager-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-tasks_db}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-postgres}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - task-manager-net
+
+  backend:
+    build: ./backend
+    container_name: task-manager-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-tasks_db}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-change_this_secret_before_deploying}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      # Debe coincidir con la URL desde la que el navegador abre el frontend (ver .env.example)
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+      SEED_ADMIN_USERNAME: ${SEED_ADMIN_USERNAME:-admin}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-Admin123!}
+    ports:
+      - '3000:3000'
+    networks:
+      - task-manager-net
+
+  frontend:
+    build: ./frontend
+    container_name: task-manager-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      # URL que usará el NAVEGADOR del usuario para llamar al backend (ver .env.example)
+      API_URL: ${API_URL:-http://localhost:3000/api}
+    ports:
+      - '80:80'
+    networks:
+      - task-manager-net
+
+volumes:
+  postgres_data:
+
+networks:
+  task-manager-net:
+    driver: bridge

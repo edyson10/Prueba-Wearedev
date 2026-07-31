@@ -1,0 +1,27 @@
+# Variables de entorno (usar los .env.example como referencia)
+.env
+**/.env
+
+# Node
+node_modules/
+
+# Builds
+dist/
+coverage/
+
+# Angular
+.angular/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/

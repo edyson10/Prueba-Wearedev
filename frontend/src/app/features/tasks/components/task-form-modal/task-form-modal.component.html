@@ -1,0 +1,70 @@
+<div #modalRef class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title">{{ editingId ? 'Editar tarea' : 'Nueva tarea' }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="task-title" class="form-label">Título *</label>
+            <input
+              id="task-title"
+              type="text"
+              class="form-control"
+              formControlName="title"
+              maxlength="100"
+              [class.is-invalid]="title.invalid && title.touched"
+            />
+            @if (title.invalid && title.touched) {
+              <div class="invalid-feedback">
+                @if (title.errors?.['required']) {
+                  El título es obligatorio.
+                } @else if (title.errors?.['maxlength']) {
+                  El título no puede superar los 100 caracteres.
+                }
+              </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="task-description" class="form-label">Descripción</label>
+            <textarea
+              id="task-description"
+              class="form-control"
+              rows="3"
+              maxlength="500"
+              formControlName="description"
+              [class.is-invalid]="description.invalid && description.touched"
+            ></textarea>
+            @if (description.invalid && description.touched) {
+              <div class="invalid-feedback">La descripción no puede superar los 500 caracteres.</div>
+            }
+            <div class="form-text text-end">{{ description.value?.length || 0 }}/500</div>
+          </div>
+
+          <div class="mb-2">
+            <label for="task-status" class="form-label">Estado</label>
+            <select id="task-status" class="form-select" formControlName="status">
+              @for (s of statuses; track s) {
+                <option [value]="s">{{ statusLabels[s] }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting">
+            @if (submitting) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

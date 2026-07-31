@@ -1,0 +1,42 @@
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0">Mis tareas</h1>
+    <button type="button" class="btn btn-primary" (click)="openCreateModal()">
+      <i class="bi bi-plus-lg me-1"></i>Nueva tarea
+    </button>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-12 col-md-6">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar por título o descripción..."
+        [value]="searchTerm()"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+    </div>
+    <div class="col-12 col-md-4">
+      <select
+        class="form-select"
+        [value]="statusFilter()"
+        (change)="onStatusFilterChange($any($event.target).value)"
+      >
+        <option value="all">Todos los estados</option>
+        @for (s of statuses; track s) {
+          <option [value]="s">{{ statusLabels[s] }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <app-task-table
+    [tasks]="filteredTasks()"
+    [loading]="loading()"
+    (edit)="openEditModal($event)"
+    (delete)="onDeleteRequest($event)"
+    (statusChange)="onStatusChange($event)"
+  />
+
+  <app-task-form-modal [submitting]="submitting()" (save)="onSave($event)" />
+</div>

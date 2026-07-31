@@ -1,0 +1,13 @@
+<nav class="navbar navbar-expand navbar-dark bg-primary">
+  <div class="container">
+    <span class="navbar-brand mb-0 h1">Task Manager</span>
+    @if (authService.currentUser(); as user) {
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-white-50 small">{{ user.username }}</span>
+        <button type="button" class="btn btn-sm btn-outline-light" (click)="logout()">
+          Cerrar sesión
+        </button>
+      </div>
+    }
+  </div>
+</nav>
